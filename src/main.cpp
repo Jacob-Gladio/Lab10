@@ -27,7 +27,7 @@ Callback touchCallback;
 
 volatile bool touchFlag = false;
 volatile unsigned long lastTouch = 0;
-const int TOUCH_THRESHOLD = 0.5;
+const int TOUCH_THRESHOLD = 1200;
 
 bool armed = false;
 bool alarmOn = false;
@@ -208,7 +208,7 @@ void loop()
   if (touchFlag == true)
   {
     touchFlag = false;
-    touchCallback;
+    touchCallback();
   }
 
   // Timer
