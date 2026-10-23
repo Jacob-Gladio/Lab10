@@ -11,9 +11,19 @@
 #define BUZZER     13
 
 // ---------- Global variables ----------
+int lastStateA = HIGH;
+int pressCountA = 0;
+unsigned long lastChangeA = 0;
+const unsigned long DEBOUNCE_TIME = 50;
 
 
 // ---------- Event handlers and callbacks ----------
+void onButtonAPressed()
+{
+  pressCountA++;
+  Serial.print("Button A pressed. Count = ");
+  Serial.println(pressCountA);
+}
 
 
 // ---------- Interrupt Service Routines (ISRs) ----------
@@ -40,9 +50,15 @@ void setup()
 void loop()
 {
   // Button A (polling)
-  if (digitalRead(BUTTON_A) == LOW)
+  int stateA = digitalRead(BUTTON_A);
+  if (stateA != lastStateA && millis() - lastChangeA > DEBOUNCE_TIME)
   {
-    Serial.println("Button A is pressed");
+    lastChangeA = millis();
+    lastStateA = stateA;
+    if (stateA == LOW)
+    {
+      onButtonAPressed();
+    }
   }
 
   // Button B (interrupt)
