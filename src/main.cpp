@@ -16,6 +16,9 @@ int pressCountA = 0;
 unsigned long lastChangeA = 0;
 const unsigned long DEBOUNCE_TIME = 50;
 
+volatile bool buttonBFlag = false;
+volatile unsigned long lastInterruptB = 0;
+int pressCountB = 0;
 
 // ---------- Event handlers and callbacks ----------
 void onButtonAPressed()
@@ -25,8 +28,23 @@ void onButtonAPressed()
   Serial.println(pressCountA);
 }
 
+void onButtonBPressed()
+{
+  pressCountB++;
+  Serial.print("Button B pressed (interrupt). Count = ");
+  Serial.println(pressCountB);
+}
+
 
 // ---------- Interrupt Service Routines (ISRs) ----------
+void IRAM_ATTR buttonB_ISR()
+{
+  if (millis() - lastInterruptB > 200)
+  {
+    lastInterruptB = millis();
+    buttonBFlag = true;
+  }
+}
 
 
 void setup()
@@ -43,6 +61,7 @@ void setup()
   pinMode(BUZZER, OUTPUT);
 
   // Interrupts
+  attachInterrupt(digitalPinToInterrupt(BUTTON_B), buttonB_ISR, FALLING);
 
   // Callbacks
 }
@@ -62,8 +81,15 @@ void loop()
   }
 
   // Button B (interrupt)
+  if (buttonBFlag == true)
+  {
+    buttonBFlag = false;
+    onButtonBPressed();
+  }
 
   // Touch sensor (interrupt)
 
   // Timer
+  Serial.println("Busy...");
+  delay(3000);
 }
