@@ -3,9 +3,9 @@
 #include <Arduino.h>
 
 // ---------- Pin numbers ----------
-#define BUTTON_A   ___   // polled button
-#define BUTTON_B   ___   // interrupt button
-#define TOUCH_PIN  ___   // touch sensor wire
+#define BUTTON_A   32   // polled button
+#define BUTTON_B   33   // interrupt button
+#define TOUCH_PIN  27   // touch sensor wire
 #define GREEN_LED  25
 #define RED_LED    26
 #define BUZZER     13
@@ -26,6 +26,11 @@ void setup()
   Serial.println("Lab 10: Event-Driven Programming");
 
   // Inputs and outputs
+  pinMode(BUTTON_A, INPUT_PULLUP);
+  pinMode(BUTTON_B, INPUT_PULLUP);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
 
   // Interrupts
 
@@ -35,6 +40,10 @@ void setup()
 void loop()
 {
   // Button A (polling)
+  if (digitalRead(BUTTON_A) == LOW)
+  {
+    Serial.println("Button A is pressed");
+  }
 
   // Button B (interrupt)
 
